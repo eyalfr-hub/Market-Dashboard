@@ -4,65 +4,65 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Market Dashboard - תמונת מצב יומית לשוק</title>
-
+  
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-
+  
   <!-- React & ReactDOM CDN -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-
+  
   <!-- Babel for JSX -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
+  
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+  
   <!-- Google Fonts: Heebo & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
+  
   <script>
     tailwind.config = {
       theme: {
         extend: {
           fontFamily: {
-            sans: [&apos;Heebo&apos;, &apos;Inter&apos;, &apos;system-ui&apos;, &apos;sans-serif&apos;],
+            sans: ['Heebo', 'Inter', 'system-ui', 'sans-serif'],
           },
           colors: {
             brand: {
-              bg: &apos;#EBF2F7&apos;,
-              card: &apos;#FFFFFF&apos;,
-              dark: &apos;#0F172A&apos;,
-              cyan: &apos;#00BCD4&apos;,
-              blue: &apos;#2563EB&apos;,
-              purple: &apos;#7C3AED&apos;,
-              orange: &apos;#F59E0B&apos;,
-              red: &apos;#EF4444&apos;,
-              green: &apos;#10B981&apos;,
+              bg: '#EBF2F7',
+              card: '#FFFFFF',
+              dark: '#0F172A',
+              cyan: '#00BCD4',
+              blue: '#2563EB',
+              purple: '#7C3AED',
+              orange: '#F59E0B',
+              red: '#EF4444',
+              green: '#10B981',
             }
           },
           borderRadius: {
-            &apos;2xl&apos;: &apos;1.25rem&apos;,
-            &apos;3xl&apos;: &apos;1.75rem&apos;,
+            '2xl': '1.25rem',
+            '3xl': '1.75rem',
           },
           boxShadow: {
-            &apos;card&apos;: &apos;0 10px 25px -5px rgba(100, 116, 139, 0.08), 0 4px 10px -2px rgba(100, 116, 139, 0.04)&apos;,
-            &apos;card-hover&apos;: &apos;0 20px 30px -10px rgba(100, 116, 139, 0.15)&apos;,
-            &apos;glow-cyan&apos;: &apos;0 8px 25px -4px rgba(0, 188, 212, 0.35)&apos;,
-            &apos;glow-red&apos;: &apos;0 8px 25px -4px rgba(239, 68, 68, 0.35)&apos;,
-            &apos;glow-orange&apos;: &apos;0 8px 25px -4px rgba(245, 158, 11, 0.35)&apos;,
+            'card': '0 10px 25px -5px rgba(100, 116, 139, 0.08), 0 4px 10px -2px rgba(100, 116, 139, 0.04)',
+            'card-hover': '0 20px 30px -10px rgba(100, 116, 139, 0.15)',
+            'glow-cyan': '0 8px 25px -4px rgba(0, 188, 212, 0.35)',
+            'glow-red': '0 8px 25px -4px rgba(239, 68, 68, 0.35)',
+            'glow-orange': '0 8px 25px -4px rgba(245, 158, 11, 0.35)',
           }
         }
       }
     }
   </script>
-
+  
   <style>
     body {
       background-color: #EBF2F7;
-      font-family: &apos;Heebo&apos;, &apos;Inter&apos;, sans-serif;
+      font-family: 'Heebo', 'Inter', sans-serif;
       color: #1e293b;
     }
     ::-webkit-scrollbar {
@@ -90,7 +90,7 @@
 
     function MarketApp() {
       const [marketData, setMarketData] = useState(null);
-      const [selectedIndex, setSelectedIndex] = useState(&apos;nasdaq&apos;); // &apos;nasdaq&apos; or &apos;sp500&apos;
+      const [selectedIndex, setSelectedIndex] = useState('nasdaq'); // 'nasdaq' or 'sp500'
       const [loading, setLoading] = useState(true);
       const [refreshing, setRefreshing] = useState(false);
       const [chartRange, setChartRange] = useState(60); // 30, 60, 120 days
@@ -100,7 +100,7 @@
         sma50: true,
         sma200: true
       });
-      const [toast, setToast] = useState(&apos;&apos;);
+      const [toast, setToast] = useState('');
 
       const chartCanvasRef = useRef(null);
       const chartInstanceRef = useRef(null);
@@ -108,19 +108,19 @@
       const loadData = async (forceRefresh = false) => {
         if (forceRefresh) setRefreshing(true);
         try {
-          const endpoint = forceRefresh ? &apos;/api/refresh&apos; : &apos;/api/market-data&apos;;
-          const method = forceRefresh ? &apos;POST&apos; : &apos;GET&apos;;
+          const endpoint = forceRefresh ? '/api/refresh' : '/api/market-data';
+          const method = forceRefresh ? 'POST' : 'GET';
           const resp = await fetch(endpoint, { method });
           const json = await resp.json();
-          if (json.status === &apos;success&apos; &amp;&amp; json.data) {
+          if (json.status === 'success' && json.data) {
             setMarketData(json.data);
             if (forceRefresh) {
-              showToast(&apos;נתוני השוק רועננו בהצלחה!&apos;);
+              showToast('נתוני השוק רועננו בהצלחה!');
             }
           }
         } catch (err) {
           console.error("Error loading market data:", err);
-          showToast(&apos;שגיאה בטעינת נתונים&apos;);
+          showToast('שגיאה בטעינת נתונים');
         } finally {
           setLoading(false);
           setRefreshing(false);
@@ -133,7 +133,7 @@
 
       const showToast = (msg) => {
         setToast(msg);
-        setTimeout(() => setToast(&apos;&apos;), 3500);
+        setTimeout(() => setToast(''), 3500);
       };
 
       const currentData = marketData ? marketData[selectedIndex] : null;
@@ -157,33 +157,33 @@
           chartInstanceRef.current.destroy();
         }
 
-        const ctx = chartCanvasRef.current.getContext(&apos;2d&apos;);
+        const ctx = chartCanvasRef.current.getContext('2d');
         const gradientPrice = ctx.createLinearGradient(0, 0, 0, 320);
-        gradientPrice.addColorStop(0, &apos;rgba(0, 188, 212, 0.28)&apos;);
-        gradientPrice.addColorStop(1, &apos;rgba(0, 188, 212, 0.01)&apos;);
+        gradientPrice.addColorStop(0, 'rgba(0, 188, 212, 0.28)');
+        gradientPrice.addColorStop(1, 'rgba(0, 188, 212, 0.01)');
 
         const datasets = [
           {
             label: `${currentData.symbol_ticker} - מחיר סגירה`,
             data: prices,
-            borderColor: &apos;#00BCD4&apos;,
+            borderColor: '#00BCD4',
             backgroundColor: gradientPrice,
             borderWidth: 2.8,
             fill: true,
             tension: 0.15,
-            pointRadius: sliceCount &gt; 60 ? 0 : 2.5,
+            pointRadius: sliceCount > 60 ? 0 : 2.5,
             pointHoverRadius: 6,
-            pointBackgroundColor: &apos;#00BCD4&apos;,
-            pointBorderColor: &apos;#FFFFFF&apos;,
+            pointBackgroundColor: '#00BCD4',
+            pointBorderColor: '#FFFFFF',
             order: 4
           }
         ];
 
         if (activeMAs.sma10) {
           datasets.push({
-            label: &apos;10 SMA&apos;,
+            label: '10 SMA',
             data: sma10,
-            borderColor: &apos;#F59E0B&apos;,
+            borderColor: '#F59E0B',
             borderWidth: 2,
             borderDash: [3, 3],
             fill: false,
@@ -195,9 +195,9 @@
 
         if (activeMAs.ema21) {
           datasets.push({
-            label: &apos;21 EMA (קו מנחה מרכזי)&apos;,
+            label: '21 EMA (קו מנחה מרכזי)',
             data: ema21,
-            borderColor: &apos;#8B5CF6&apos;,
+            borderColor: '#8B5CF6',
             borderWidth: 2.4,
             fill: false,
             tension: 0.2,
@@ -208,10 +208,9 @@
 
         if (activeMAs.sma50) {
           datasets.push({
-            label: &apos;50 SMA (מוסדי)&apos;,
+            label: '50 SMA (מוסדי)',
             data: sma50,
-
-            borderColor: &apos;#3B82F6&apos;,
+            borderColor: '#3B82F6',
             borderWidth: 2.2,
             fill: false,
             tension: 0.2,
@@ -222,9 +221,9 @@
 
         if (activeMAs.sma200) {
           datasets.push({
-            label: &apos;200 SMA (טווח ארוך)&apos;,
+            label: '200 SMA (טווח ארוך)',
             data: sma200,
-            borderColor: &apos;#64748B&apos;,
+            borderColor: '#64748B',
             borderWidth: 1.8,
             borderDash: [5, 4],
             fill: false,
@@ -235,26 +234,26 @@
         }
 
         chartInstanceRef.current = new Chart(ctx, {
-          type: &apos;line&apos;,
+          type: 'line',
           data: { labels, datasets },
           options: {
             responsive: true,
             maintainAspectRatio: false,
-            interaction: { mode: &apos;index&apos;, intersect: false },
+            interaction: { mode: 'index', intersect: false },
             plugins: {
               legend: {
                 display: false
               },
               tooltip: {
-                backgroundColor: &apos;rgba(15, 23, 42, 0.95)&apos;,
-                titleFont: { size: 13, weight: &apos;bold&apos; },
+                backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                titleFont: { size: 13, weight: 'bold' },
                 bodyFont: { size: 12 },
                 padding: 12,
                 cornerRadius: 12,
                 callbacks: {
                   label: function(c) {
                     const val = c.parsed.y;
-                    if (val === null || val === undefined) return &apos;&apos;;
+                    if (val === null || val === undefined) return '';
                     return ` ${c.dataset.label}: ${val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
                   }
                 }
@@ -264,18 +263,18 @@
               x: {
                 grid: { display: false },
                 ticks: {
-                  color: &apos;#94a3b8&apos;,
-                  font: { weight: &apos;600&apos;, size: 11 },
+                  color: '#94a3b8',
+                  font: { weight: '600', size: 11 },
                   maxTicksLimit: 10
                 }
               },
               y: {
-                position: &apos;left&apos;,
-                grid: { color: &apos;rgba(226, 232, 240, 0.7)&apos; },
+                position: 'left',
+                grid: { color: 'rgba(226, 232, 240, 0.7)' },
                 ticks: {
-                  color: &apos;#94a3b8&apos;,
-                  font: { weight: &apos;600&apos;, size: 11 },
-                  callback: val =&gt; val.toLocaleString()
+                  color: '#94a3b8',
+                  font: { weight: '600', size: 11 },
+                  callback: val => val.toLocaleString()
                 }
               }
             }
@@ -298,7 +297,7 @@
             <h3 className="text-xl font-bold text-slate-800 mb-2">אין נתונים זמינים כרגע</h3>
             <p className="text-slate-500 mb-6">לא ניתן לטעון את נתוני המדדים. אנא נסה לרענן שוב.</p>
             <button
-              onClick={() =&gt; loadData(true)}
+              onClick={() => loadData(true)}
               className="bg-cyan-500 hover:bg-cyan-600 text-white font-bold px-6 py-2.5 rounded-full transition shadow-md"
             >
               רענן נתונים עכשיו
@@ -309,18 +308,20 @@
 
       const nasdaq = marketData.nasdaq;
       const sp500 = marketData.sp500;
-      const isPositive = currentData.daily_change_pct &gt;= 0;
+      const isPositive = currentData.daily_change_pct >= 0;
       const isOverextended = currentData.flags.is_overextended;
 
       return (
         <div className="max-w-[1520px] mx-auto space-y-5">
-          {toast &amp;&amp; (
+          {/* Toast Notification */}
+          {toast && (
             <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-slate-900/95 text-white px-6 py-3 rounded-full text-sm font-semibold shadow-2xl flex items-center gap-2 backdrop-blur-md border border-slate-700">
               <span className="text-cyan-400">✓</span>
               <span>{toast}</span>
             </div>
           )}
 
+          {/* Header Bar */}
           <div className="flex flex-wrap items-center justify-between gap-4 bg-white/80 backdrop-blur-md px-6 py-4 rounded-3xl border border-slate-200/80 shadow-card">
             <div className="flex items-center gap-3.5">
               <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-glow-cyan shrink-0">
@@ -341,59 +342,61 @@
               </div>
             </div>
 
+            {/* Index Switcher */}
             <div className="flex items-center bg-slate-100/90 p-1.5 rounded-2xl border border-slate-200 shadow-inner">
               <button
-                onClick={() =&gt; setSelectedIndex(&apos;nasdaq&apos;)}
+                onClick={() => setSelectedIndex('nasdaq')}
                 className={`flex items-center gap-3 px-5 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 ${
-                  selectedIndex === &apos;nasdaq&apos;
-                    ? &apos;bg-white text-slate-900 shadow-md scale-[1.02]&apos;
-                    : &apos;text-slate-600 hover:text-slate-900 hover:bg-white/50&apos;
+                  selectedIndex === 'nasdaq'
+                    ? 'bg-white text-slate-900 shadow-md scale-[1.02]'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
                 }`}
               >
                 <span>נאסד"ק (^IXIC)</span>
                 <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
-                  nasdaq.daily_change_pct &gt;= 0 ? &apos;bg-emerald-100 text-emerald-700&apos; : &apos;bg-rose-100 text-rose-700&apos;
+                  nasdaq.daily_change_pct >= 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'
                 }`}>
-                  {nasdaq.daily_change_pct &gt;= 0 ? &apos;+&apos; : &apos;&apos;}{nasdaq.daily_change_pct}%
+                  {nasdaq.daily_change_pct >= 0 ? '+' : ''}{nasdaq.daily_change_pct}%
                 </span>
               </button>
 
               <button
-                onClick={() =&gt; setSelectedIndex(&apos;sp500&apos;)}
+                onClick={() => setSelectedIndex('sp500')}
                 className={`flex items-center gap-3 px-5 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 ${
-                  selectedIndex === &apos;sp500&apos;
-                    ? &apos;bg-white text-slate-900 shadow-md scale-[1.02]&apos;
-                    : &apos;text-slate-600 hover:text-slate-900 hover:bg-white/50&apos;
+                  selectedIndex === 'sp500'
+                    ? 'bg-white text-slate-900 shadow-md scale-[1.02]'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
                 }`}
               >
-                <span>S&amp;P 500 (^GSPC)</span>
+                <span>S&P 500 (^GSPC)</span>
                 <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
-                  sp500.daily_change_pct &gt;= 0 ? &apos;bg-emerald-100 text-emerald-700&apos; : &apos;bg-rose-100 text-rose-700&apos;
+                  sp500.daily_change_pct >= 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'
                 }`}>
-                  {sp500.daily_change_pct &gt;= 0 ? &apos;+&apos; : &apos;&apos;}{sp500.daily_change_pct}%
+                  {sp500.daily_change_pct >= 0 ? '+' : ''}{sp500.daily_change_pct}%
                 </span>
               </button>
             </div>
 
             <div className="flex items-center gap-3">
               <button
-                onClick={() =&gt; loadData(true)}
+                onClick={() => loadData(true)}
                 disabled={refreshing}
                 className="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-4 py-2.5 rounded-2xl text-xs font-bold transition shadow-sm disabled:opacity-50"
               >
                 <svg
-                  className={`w-4 h-4 ${refreshing ? &apos;animate-spin&apos; : &apos;&apos;}`}
+                  className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
-                <span>{refreshing ? &apos;מרענן...&apos; : &apos;רענן נתונים&apos;}</span>
+                <span>{refreshing ? 'מרענן...' : 'רענן נתונים'}</span>
               </button>
             </div>
           </div>
 
+          {/* Overextended Alert Banner */}
           {isOverextended ? (
             <div className="bg-gradient-to-r from-amber-500/15 via-orange-500/10 to-red-500/15 border-2 border-orange-400/60 rounded-3xl p-4 md:p-5 shadow-card flex items-start gap-4">
               <div className="w-12 h-12 rounded-2xl bg-orange-500 text-white flex items-center justify-center shrink-0 shadow-glow-orange badge-pulse">
@@ -406,12 +409,12 @@
                   <h3 className="text-base font-black text-slate-900">
                     התראת מתיחת יתר (Extended Market Flag)
                   </h3>
-                  {currentData.flags.flag_21 &amp;&amp; (
+                  {currentData.flags.flag_21 && (
                     <span className="bg-orange-500 text-white text-xs px-2.5 py-0.5 rounded-full font-bold shadow-sm">
                       מתיחה מעל 21 EMA: {currentData.moving_averages.dist_21_pct}% (סף: 5.0%+)
                     </span>
                   )}
-                  {currentData.flags.flag_50 &amp;&amp; (
+                  {currentData.flags.flag_50 && (
                     <span className="bg-red-500 text-white text-xs px-2.5 py-0.5 rounded-full font-bold shadow-sm">
                       מתיחה מעל 50 SMA: {currentData.moving_averages.dist_50_pct}% (סף: 7.0%+)
                     </span>
@@ -433,6 +436,7 @@
             </div>
           )}
 
+          {/* 4 KPIs Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-card hover:shadow-card-hover transition-all">
               <div className="flex items-center justify-between text-xs text-slate-500 font-bold mb-1">
@@ -446,10 +450,10 @@
               </div>
               <div className="flex items-center justify-between pt-2 border-t border-slate-100">
                 <span className={`inline-flex items-center gap-1 text-sm font-black px-2.5 py-1 rounded-xl ${
-                  isPositive ? &apos;bg-emerald-50 text-emerald-600&apos; : &apos;bg-rose-50 text-rose-600&apos;
+                  isPositive ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'
                 }`}>
-                  {isPositive ? &apos;▲ +&apos; : &apos;▼ &apos;}
-                  {currentData.daily_change_pts} ({isPositive ? &apos;+&apos; : &apos;&apos;}{currentData.daily_change_pct}%)
+                  {isPositive ? '▲ +' : '▼ '}
+                  {currentData.daily_change_pts} ({isPositive ? '+' : ''}{currentData.daily_change_pct}%)
                 </span>
                 <span className="text-xs text-slate-500 font-medium font-sans">
                   טווח: {currentData.low.toLocaleString()} - {currentData.high.toLocaleString()}
@@ -478,9 +482,9 @@
               <div className="flex items-center justify-between pt-2 border-t border-slate-100">
                 <span className="text-xs text-slate-600 font-medium">מרחק מהשיא:</span>
                 <span className={`text-sm font-black font-sans px-2.5 py-0.5 rounded-xl ${
-                  currentData.off_52w_high_pct &gt;= -1.0 ? &apos;bg-emerald-50 text-emerald-700&apos; : &apos;bg-slate-100 text-slate-700&apos;
+                  currentData.off_52w_high_pct >= -1.0 ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-700'
                 }`}>
-                  {currentData.off_52w_high_pct &gt; 0 ? &apos;+&apos; : &apos;&apos;}{currentData.off_52w_high_pct}%
+                  {currentData.off_52w_high_pct > 0 ? '+' : ''}{currentData.off_52w_high_pct}%
                 </span>
               </div>
             </div>
@@ -489,17 +493,17 @@
               <div className="flex items-center justify-between text-xs text-slate-500 font-bold mb-1">
                 <span>איכות סגירה (Closing Range)</span>
                 <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
-                  currentData.closing_range.status === &apos;strong&apos; ? &apos;bg-emerald-100 text-emerald-700&apos; :
-                  currentData.closing_range.status === &apos;neutral&apos; ? &apos;bg-amber-100 text-amber-700&apos; :
-                  &apos;bg-rose-100 text-rose-700&apos;
+                  currentData.closing_range.status === 'strong' ? 'bg-emerald-100 text-emerald-700' :
+                  currentData.closing_range.status === 'neutral' ? 'bg-amber-100 text-amber-700' :
+                  'bg-rose-100 text-rose-700'
                 }`}>
                   {currentData.closing_range.pct}%
                 </span>
               </div>
               <div className="flex items-baseline gap-2 mb-2">
                 <span className="text-2xl font-black text-slate-900">
-                  {currentData.closing_range.status === &apos;strong&apos; ? &apos;סגירה חזקה (איסוף)&apos; :
-                   currentData.closing_range.status === &apos;neutral&apos; ? &apos;סגירה ניטרלית&apos; : &apos;סגירה חלשה (לחץ)&apos;}
+                  {currentData.closing_range.status === 'strong' ? 'סגירה חזקה (איסוף)' :
+                   currentData.closing_range.status === 'neutral' ? 'סגירה ניטרלית' : 'סגירה חלשה (לחץ)'}
                 </span>
               </div>
               
@@ -507,8 +511,8 @@
                 <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden flex">
                   <div
                     className={`h-full transition-all duration-500 rounded-full ${
-                      currentData.closing_range.pct &gt;= 70 ? &apos;bg-emerald-500&apos; :
-                      currentData.closing_range.pct &gt;= 40 ? &apos;bg-amber-500&apos; : &apos;bg-rose-500&apos;
+                      currentData.closing_range.pct >= 70 ? 'bg-emerald-500' :
+                      currentData.closing_range.pct >= 40 ? 'bg-amber-500' : 'bg-rose-500'
                     }`}
                     style={{ width: `${Math.min(100, Math.max(0, currentData.closing_range.pct))}%` }}
                   ></div>
@@ -543,6 +547,7 @@
             </div>
           </div>
 
+          {/* Moving Averages Matrix */}
           <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-card space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
               <div className="flex items-center gap-2">
@@ -563,10 +568,10 @@
                 <span className="text-xs text-slate-500 font-bold">סדר ממוצעים:</span>
                 <span className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 shadow-sm ${
                   currentData.ma_order.is_bullish
-                    ? &apos;bg-emerald-100 text-emerald-800 border border-emerald-200&apos;
-                    : &apos;bg-amber-100 text-amber-800 border border-amber-200&apos;
+                    ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                    : 'bg-amber-100 text-amber-800 border border-amber-200'
                 }`}>
-                  <span className={`w-2 h-2 rounded-full ${currentData.ma_order.is_bullish ? &apos;bg-emerald-500&apos; : &apos;bg-amber-500&apos;}`}></span>
+                  <span className={`w-2 h-2 rounded-full ${currentData.ma_order.is_bullish ? 'bg-emerald-500' : 'bg-amber-500'}`}></span>
                   {currentData.ma_order.alignment_status}
                 </span>
               </div>
@@ -584,15 +589,15 @@
                   </span>
                 </div>
                 <div className="text-2xl font-black text-slate-900 font-sans">
-                  {currentData.moving_averages.dist_10_pct &gt; 0 ? &apos;+&apos; : &apos;&apos;}{currentData.moving_averages.dist_10_pct}%
+                  {currentData.moving_averages.dist_10_pct > 0 ? '+' : ''}{currentData.moving_averages.dist_10_pct}%
                 </div>
                 <p className="text-[11px] text-slate-500">מומנטום קצר טווח</p>
               </div>
 
               <div className={`p-4 rounded-2xl border transition-all space-y-2 ${
                 currentData.flags.flag_21
-                  ? &apos;bg-orange-50/90 border-orange-300 shadow-sm&apos;
-                  : &apos;bg-purple-50/70 border-purple-200/70&apos;
+                  ? 'bg-orange-50/90 border-orange-300 shadow-sm'
+                  : 'bg-purple-50/70 border-purple-200/70'
               }`}>
                 <div className="flex items-center justify-between text-xs font-bold">
                   <span className="flex items-center gap-1.5 text-purple-900">
@@ -605,11 +610,11 @@
                 </div>
                 <div className="flex items-center justify-between">
                   <span className={`text-2xl font-black font-sans ${
-                    currentData.flags.flag_21 ? &apos;text-orange-600&apos; : &apos;text-purple-700&apos;
+                    currentData.flags.flag_21 ? 'text-orange-600' : 'text-purple-700'
                   }`}>
-                    {currentData.moving_averages.dist_21_pct &gt; 0 ? &apos;+&apos; : &apos;&apos;}{currentData.moving_averages.dist_21_pct}%
+                    {currentData.moving_averages.dist_21_pct > 0 ? '+' : ''}{currentData.moving_averages.dist_21_pct}%
                   </span>
-                  {currentData.flags.flag_21 &amp;&amp; (
+                  {currentData.flags.flag_21 && (
                     <span className="bg-orange-500 text-white text-[10px] font-black px-2 py-0.5 rounded-md">
                       ⚠️ מתוח (&gt;5%)
                     </span>
@@ -620,8 +625,8 @@
 
               <div className={`p-4 rounded-2xl border transition-all space-y-2 ${
                 currentData.flags.flag_50
-                  ? &apos;bg-red-50/90 border-red-300 shadow-sm&apos;
-                  : &apos;bg-blue-50/70 border-blue-200/70&apos;
+                  ? 'bg-red-50/90 border-red-300 shadow-sm'
+                  : 'bg-blue-50/70 border-blue-200/70'
               }`}>
                 <div className="flex items-center justify-between text-xs font-bold">
                   <span className="flex items-center gap-1.5 text-blue-900">
@@ -634,11 +639,11 @@
                 </div>
                 <div className="flex items-center justify-between">
                   <span className={`text-2xl font-black font-sans ${
-                    currentData.flags.flag_50 ? &apos;text-red-600&apos; : &apos;text-blue-700&apos;
+                    currentData.flags.flag_50 ? 'text-red-600' : 'text-blue-700'
                   }`}>
-                    {currentData.moving_averages.dist_50_pct &gt; 0 ? &apos;+&apos; : &apos;&apos;}{currentData.moving_averages.dist_50_pct}%
+                    {currentData.moving_averages.dist_50_pct > 0 ? '+' : ''}{currentData.moving_averages.dist_50_pct}%
                   </span>
-                  {currentData.flags.flag_50 &amp;&amp; (
+                  {currentData.flags.flag_50 && (
                     <span className="bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-md">
                       🚨 מתוח (&gt;7%)
                     </span>
@@ -658,7 +663,7 @@
                   </span>
                 </div>
                 <div className="text-2xl font-black text-slate-900 font-sans">
-                  {currentData.moving_averages.dist_200_pct &gt; 0 ? &apos;+&apos; : &apos;&apos;}{currentData.moving_averages.dist_200_pct}%
+                  {currentData.moving_averages.dist_200_pct > 0 ? '+' : ''}{currentData.moving_averages.dist_200_pct}%
                 </div>
                 <p className="text-[11px] text-slate-500">מגמת על ארוכת טווח</p>
               </div>
@@ -669,13 +674,14 @@
                   <span className="text-[10px] bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded font-mono">Spread</span>
                 </div>
                 <div className="text-2xl font-black text-slate-900 font-sans">
-                  {currentData.spread_21_50_pct &gt; 0 ? &apos;+&apos; : &apos;&apos;}{currentData.spread_21_50_pct}%
+                  {currentData.spread_21_50_pct > 0 ? '+' : ''}{currentData.spread_21_50_pct}%
                 </div>
                 <p className="text-[11px] text-slate-500">מרחק בין 21 EMA ל-50 SMA</p>
               </div>
             </div>
           </div>
 
+          {/* Interactive Chart */}
           <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-card space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
@@ -693,7 +699,7 @@
                     <input
                       type="checkbox"
                       checked={activeMAs.sma10}
-                      onChange={e =&gt; setActiveMAs({ ...activeMAs, sma10: e.target.checked })}
+                      onChange={e => setActiveMAs({ ...activeMAs, sma10: e.target.checked })}
                       className="rounded text-amber-500 focus:ring-0"
                     />
                     <span>10 SMA</span>
@@ -702,7 +708,7 @@
                     <input
                       type="checkbox"
                       checked={activeMAs.ema21}
-                      onChange={e =&gt; setActiveMAs({ ...activeMAs, ema21: e.target.checked })}
+                      onChange={e => setActiveMAs({ ...activeMAs, ema21: e.target.checked })}
                       className="rounded text-purple-600 focus:ring-0"
                     />
                     <span>21 EMA</span>
@@ -711,7 +717,7 @@
                     <input
                       type="checkbox"
                       checked={activeMAs.sma50}
-                      onChange={e =&gt; setActiveMAs({ ...activeMAs, sma50: e.target.checked })}
+                      onChange={e => setActiveMAs({ ...activeMAs, sma50: e.target.checked })}
                       className="rounded text-blue-600 focus:ring-0"
                     />
                     <span>50 SMA</span>
@@ -720,7 +726,7 @@
                     <input
                       type="checkbox"
                       checked={activeMAs.sma200}
-                      onChange={e =&gt; setActiveMAs({ ...activeMAs, sma200: e.target.checked })}
+                      onChange={e => setActiveMAs({ ...activeMAs, sma200: e.target.checked })}
                       className="rounded text-slate-600 focus:ring-0"
                     />
                     <span>200 SMA</span>
@@ -729,20 +735,20 @@
 
                 <div className="flex items-center bg-slate-100 p-1 rounded-2xl border border-slate-200 text-xs font-bold">
                   <button
-                    onClick={() =&gt; setChartRange(30)}
-                    className={`px-3 py-1 rounded-xl transition ${chartRange === 30 ? &apos;bg-white text-slate-900 shadow-sm&apos; : &apos;text-slate-600&apos;}`}
+                    onClick={() => setChartRange(30)}
+                    className={`px-3 py-1 rounded-xl transition ${chartRange === 30 ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'}`}
                   >
                     30 יום
                   </button>
                   <button
-                    onClick={() =&gt; setChartRange(60)}
-                    className={`px-3 py-1 rounded-xl transition ${chartRange === 60 ? &apos;bg-white text-slate-900 shadow-sm&apos; : &apos;text-slate-600&apos;}`}
+                    onClick={() => setChartRange(60)}
+                    className={`px-3 py-1 rounded-xl transition ${chartRange === 60 ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'}`}
                   >
                     60 יום
                   </button>
                   <button
-                    onClick={() =&gt; setChartRange(120)}
-                    className={`px-3 py-1 rounded-xl transition ${chartRange === 120 ? &apos;bg-white text-slate-900 shadow-sm&apos; : &apos;text-slate-600&apos;}`}
+                    onClick={() => setChartRange(120)}
+                    className={`px-3 py-1 rounded-xl transition ${chartRange === 120 ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'}`}
                   >
                     120 יום
                   </button>
@@ -755,6 +761,7 @@
             </div>
           </div>
 
+          {/* Market School Rules Assessment */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div className="lg:col-span-2 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-card space-y-4">
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
@@ -774,13 +781,13 @@
               </div>
 
               <div className="divide-y divide-slate-100">
-                {currentData.market_school_assessment.rules.map((rule, idx) =&gt; (
+                {currentData.market_school_assessment.rules.map((rule, idx) => (
                   <div key={idx} className="py-3 flex items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
                       <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-black shrink-0 ${
-                        rule.passed ? &apos;bg-emerald-100 text-emerald-700&apos; : &apos;bg-rose-100 text-rose-700&apos;
+                        rule.passed ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'
                       }`}>
-                        {rule.passed ? &apos;✓&apos; : &apos;✕&apos;}
+                        {rule.passed ? '✓' : '✕'}
                       </span>
                       <div>
                         <div className="text-sm font-bold text-slate-800">{rule.name}</div>
@@ -788,7 +795,7 @@
                       </div>
                     </div>
                     <span className={`text-xs font-black font-sans px-3 py-1 rounded-xl shrink-0 ${
-                      rule.passed ? &apos;bg-emerald-50 text-emerald-700&apos; : &apos;bg-rose-50 text-rose-700&apos;
+                      rule.passed ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
                     }`}>
                       {rule.val}
                     </span>
@@ -797,6 +804,7 @@
               </div>
             </div>
 
+            {/* Overall Status & Buy/Sell signals */}
             <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-card space-y-5 flex flex-col justify-between">
               <div className="space-y-4">
                 <div className="border-b border-slate-100 pb-3">
@@ -809,13 +817,13 @@
                 </div>
 
                 <div className={`p-4 rounded-2xl border space-y-2 ${
-                  currentData.market_school_assessment.color === &apos;green&apos;
-                    ? &apos;bg-emerald-50 border-emerald-200 text-emerald-950&apos;
-                    : currentData.market_school_assessment.color === &apos;orange&apos;
-                    ? &apos;bg-orange-50 border-orange-200 text-orange-950&apos;
-                    : currentData.market_school_assessment.color === &apos;amber&apos;
-                    ? &apos;bg-amber-50 border-amber-200 text-amber-950&apos;
-                    : &apos;bg-rose-50 border-rose-200 text-rose-950&apos;
+                  currentData.market_school_assessment.color === 'green'
+                    ? 'bg-emerald-50 border-emerald-200 text-emerald-950'
+                    : currentData.market_school_assessment.color === 'orange'
+                    ? 'bg-orange-50 border-orange-200 text-orange-950'
+                    : currentData.market_school_assessment.color === 'amber'
+                    ? 'bg-amber-50 border-amber-200 text-amber-950'
+                    : 'bg-rose-50 border-rose-200 text-rose-950'
                 }`}>
                   <div className="text-xs font-bold uppercase tracking-wider opacity-75">
                     אבחון מודל
@@ -831,14 +839,15 @@
                 <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-slate-800">
-                      איתותי קנייה / מכירה (Buy &amp; Sell Signals)
+                      איתותי קנייה / מכירה (Buy & Sell Signals)
                     </span>
                     <span className="text-[10px] bg-slate-200 text-slate-600 px-2 py-0.5 rounded-full font-bold">
                       השלב הבא
                     </span>
                   </div>
                   <p className="text-xs text-slate-600 leading-relaxed">
-                    תשתית האיתותים מוכנה להגדרה מפורטת של חוקי כניסה ויציאה (כגון שבירת 21 EMA, נרות היפוך במחזור גבוה, ימי חלוקה/צבירה מוסדיים). נדייק ונגדיר אותם יחד בשלב הבא.</p>
+                    תשתית האיתותים מוכנה להגדרה מפורטת של חוקי כניסה ויציאה (כגון שבירת 21 EMA, נרות היפוך במחזור גבוה, ימי חלוקה/צבירה מוסדיים). נדייק ונגדיר אותם יחד בשלב הבא.
+                  </p>
                 </div>
               </div>
 
@@ -852,7 +861,7 @@
       );
     }
 
-    ReactDOM.createRoot(document.getElementById(&apos;root&apos;)).render(<MarketApp />);
+    ReactDOM.createRoot(document.getElementById('root')).render(<MarketApp />);
   </script>
 </body>
 </html>
