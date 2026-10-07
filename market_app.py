@@ -1,4 +1,4 @@
-market_app.py
+
 """
 
 Market Dashboard Backend - Market School (Mike Webster / IBD Methodology)
